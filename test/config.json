@@ -1,0 +1,11 @@
+{
+    "mqtt" : {
+        "url" : "mqtt://localhost"
+    },
+
+    "sqlite3" : {
+        "file" : "../../db/iotdemo.sqlite"
+    },
+    "debug" : "true",
+    "interval" : "2000"
+}

@@ -1,0 +1,11 @@
+{
+    "mqtt" : {
+        "url" : "mqtt://localhost"
+    },
+
+    "mongodb" : {
+        "host" : "mongodb://localhost/iotdemo"
+    },
+
+    "debug" : "true"
+}
