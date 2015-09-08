@@ -24,20 +24,22 @@
 var config = require("./config.json");
 var _ = require("lodash");
 
-// Require the MQTT connections
+// Require MQTT and setup the connection to the broker
 var mqtt = require('mqtt');
 var client  = mqtt.connect(config.mqtt.url);
 
 // Require the Winston Logger
 var logger = require('./logger.js');
 
-// Require the MongoDB libraries
+// Require the MongoDB libraries and connect to the database
 var mongoose = require('mongoose');
-
 mongoose.connect(config.mongodb.host);
 var db = mongoose.connection;
 
+// Report database errors to the console 
 db.on('error', console.error.bind(console, 'connection error:'));
+
+// Log when a connection is established to the MongoDB server
 db.once('open', function (callback) {
     logger.info("Connection to MongoDB successful");
 });
@@ -58,6 +60,8 @@ var mqttClient  = mqtt.connect(config.mqtt.url);
 // MQTT connection function
 mqttClient.on('connect', function () {
     logger.info("Connected to MQTT server");
+    
+    // Subscribe to the MQTT topics
     mqttClient.subscribe('announcements');
     mqttClient.subscribe('sensors/+/data');
 });
@@ -74,7 +78,7 @@ mqttClient.on('message', function (topic, message) {
     }
 
     if (topic == "announcements") {
-        logger.info("Received an Announcement");
+        logger.info("Received an announcement of a new edge sensor");
         logger.trace(topic + ":" + message.toString());
 
         var sensor = new SensorModel(json);
