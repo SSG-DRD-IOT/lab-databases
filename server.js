@@ -45,8 +45,8 @@ db.once('open', function (callback) {
 });
 
 // Import the Database Model Objects
-var DataModel = require('intel-commerical-iot-database-models').DataModel;
-var SensorModel = require('intel-commerical-iot-database-models').SensorModel;
+var DataModel = require('intel-commercial-edge-network-database-models').DataModel;
+var SensorModel = require('intel-commercial-edge-network-database-models').SensorModel;
 
 if(config.debug != "true") {
     logger.remove(winston.transports.File);
