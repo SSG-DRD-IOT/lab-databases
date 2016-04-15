@@ -27,9 +27,6 @@ var _ = require("lodash");
 var mqtt = require('mqtt');
 var client  = mqtt.connect("mqtt://192.168.1.1");
 
-// Require the Winston Logger
-var logger = require('./logger.js');
-
 // Require the MongoDB libraries and connect to the database
 var mongoose = require('mongoose');
 mongoose.connect("mongodb://localhost/iotdemo");
@@ -40,25 +37,20 @@ db.on('error', console.error.bind(console, 'connection error:'));
 
 // Log when a connection is established to the MongoDB server
 db.once('open', function (callback) {
-    logger.info("Connection to MongoDB successful");
+    console.log("Connection to MongoDB successful");
 });
 
 // Import the Database Model Objects
 var DataModel = require('intel-commercial-edge-network-database-models').DataModel;
 var SensorModel = require('intel-commercial-edge-network-database-models').SensorModel;
 
-if(config.debug != "true") {
-    logger.remove(winston.transports.File);
-    logger.remove(winston.transports.Console);
-}
-
-logger.info("Edge Device Daemon is starting");
+console.log("Edge Device Daemon is starting");
 // Connect to the MQTT server
-var mqttClient  = mqtt.connect(config.mqtt.url);
+var mqttClient  = mqtt.connect('mqtt://localhost/');
 
 // MQTT connection function
 mqttClient.on('connect', function () {
-    logger.info("Connected to MQTT server");
+    console.log("Connected to MQTT server");
     
     // Subscribe to the MQTT topics
     mqttClient.subscribe('announcements');
@@ -67,25 +59,25 @@ mqttClient.on('connect', function () {
 
 // A function that runs when MQTT receives a message
 mqttClient.on('message', function (topic, message) {
-    logger.trace(topic + ":" + message.toString());
+    console.log(topic + ":" + message.toString());
 
     // Parse the incoming data
     try {
         json = JSON.parse(message);
     } catch(e){
-        logger.error(e);
+        console.log(e);
     }
 
     if (topic == "announcements") {
-        logger.info("Received an announcement of a new edge sensor");
-        logger.trace(topic + ":" + message.toString());
+        console.log("Received an announcement of a new edge sensor");
+        console.log(topic + ":" + message.toString());
 
         var sensor = new SensorModel(json);
         sensor.save(function(err, sensor) {
             if (err)
-                logger.error(err);
+                console.log(err);
             else
-                logger.trace("Wrote sensor to db:" + sensor.toString());
+                console.log("Wrote sensor to db:" + sensor.toString());
         });
     };
 
@@ -93,10 +85,10 @@ mqttClient.on('message', function (topic, message) {
         var value = new DataModel(json);
         value.save(function(err, data) {
             if (err)
-                logger.error(err);
+                console.log(err);
             else
-                logger.info(data.sensor_id + ":" + data.value);
-                logger.trace("Wrote data to db:" + data.toString());
+                console.log(data.sensor_id + ":" + data.value);
+                console.log("Wrote data to db:" + data.toString());
         });
     }
 });
