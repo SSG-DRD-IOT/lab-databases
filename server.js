@@ -25,14 +25,13 @@ var _ = require("lodash");
 
 // Require MQTT and setup the connection to the broker
 var mqtt = require('mqtt');
-var client  = mqtt.connect("mqtt://192.168.1.1");
 
 // Require the MongoDB libraries and connect to the database
 var mongoose = require('mongoose');
 mongoose.connect("mongodb://localhost/iotdemo");
 var db = mongoose.connection;
 
-// Report database errors to the console 
+// Report database errors to the console
 db.on('error', console.error.bind(console, 'connection error:'));
 
 // Log when a connection is established to the MongoDB server
@@ -51,7 +50,7 @@ var mqttClient  = mqtt.connect('mqtt://localhost/');
 // MQTT connection function
 mqttClient.on('connect', function () {
     console.log("Connected to MQTT server");
-    
+
     // Subscribe to the MQTT topics
     mqttClient.subscribe('announcements');
     mqttClient.subscribe('sensors/+/data');
