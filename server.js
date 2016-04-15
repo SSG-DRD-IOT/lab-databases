@@ -33,7 +33,7 @@ var logger = require('./logger.js');
 
 // Require the MongoDB libraries and connect to the database
 var mongoose = require('mongoose');
-mongoose.connect(config.mongodb.host);
+mongoose.connect("mongodb://localhost/iotdemo");
 var db = mongoose.connection;
 
 // Report database errors to the console 
