@@ -26,7 +26,7 @@ var _ = require("lodash");
 
 // Require MQTT and setup the connection to the broker
 var mqtt = require('mqtt');
-var client  = mqtt.connect(config.mqtt.url);
+var client  = mqtt.connect("mqtt://192.168.1.1");
 
 // Require the Winston Logger
 var logger = require('./logger.js');
