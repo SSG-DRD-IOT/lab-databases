@@ -38,22 +38,13 @@ var ActuatorModel = require('intel-commercial-edge-network-database-models').Act
 
 var actuators = [
     {
-        "id": "fan",
+        "id": "lcd",
         "ipaddress": "http://192.168.1.194:10010",
         "name": "fan",
         "description": "Decreases the temperature",
         "active": "true",
         "ioType": "digital"
-    },
-    {
-        "id": "light",
-        "ipaddress": "http://192.168.1.113:10010",
-        "name": "light",
-        "description": "Increases the temperature",
-        "active": "true",
-        "ioType": "digital"
     }
-
 ];
 
 var sensors = [
@@ -61,24 +52,6 @@ var sensors = [
         "id":"temperature",
         "name":"temperature",
         "description":"read the temp",
-        "maxfrequency":"200",
-        "frequency":"1000",
-        "active":"true",
-        "ioType":"Analog"
-    },
-    {
-        "id":"light",
-        "name":"light",
-        "description":"read the ambient light",
-        "maxfrequency":"200",
-        "frequency":"1000",
-        "active":"true",
-        "ioType":"Analog"
-    },
-    {
-        "id":"sound",
-        "name":"sound",
-        "description":"read the ambient noise",
         "maxfrequency":"200",
         "frequency":"1000",
         "active":"true",
