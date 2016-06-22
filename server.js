@@ -83,11 +83,12 @@ mqttClient.on('message', function (topic, message) {
     if (topic.match(/data/)) {
         var value = new DataModel(json);
         value.save(function(err, data) {
-            if (err)
+            if (err) {
                 console.log(err);
-            else
+            } else {
                 console.log(data.sensor_id + ":" + data.value);
                 console.log("Wrote data to db:" + data.toString());
+            }
         });
     }
 });
