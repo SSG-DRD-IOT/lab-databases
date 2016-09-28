@@ -24,7 +24,7 @@
 var mongoose = require('mongoose');
 var _ = require('lodash');
 
-mongoose.connect('mongodb://192.168.1.1/iotdemo');
+mongoose.connect('mongodb://localhost/iotdemo');
 var db = mongoose.connection;
 
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -39,7 +39,7 @@ var ActuatorModel = require('intel-commercial-edge-network-database-models').Act
 var actuators = [
     {
         "id": "lcd",
-        "ipaddress": "http://192.168.1.194:10010",
+        "ipaddress": "http://localhost:10010",
         "name": "fan",
         "description": "Decreases the temperature",
         "active": "true",
