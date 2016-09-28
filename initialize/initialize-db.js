@@ -66,7 +66,7 @@ var triggers = [
         id : "temperature_greater_than_27",
         name : "temperature_greater_than_27",
         sensor_id : "temperature",
-        condition :  "( function(sensor_value) { return sensor_value > 27 } )",
+        condition :  "( function(sensor_value) { return sensor_value.value > 27 } )",
         triggerFunc: "( function() { console.log('Temperature is to Hot'); })",
         active: true
     },
@@ -75,7 +75,7 @@ var triggers = [
         id : "temperature_less_than_20",
         name : "temperature_less_than_20",
         sensor_id : "temperature",
-        condition : "( function(sensor_value) { return sensor_value < 20 } )",
+        condition : "( function(sensor_value) { return sensor_value.value < 20 } )",
         triggerFunc : "( function() { console.log('Temperature is to Hot'); } )",
         active: true
     },
@@ -84,7 +84,7 @@ var triggers = [
         id : "temperature_ok",
         name : "temperature_ok",
         sensor_id : "temperature",
-        condition :  "( function(temperature) { return sensor_value > 20 && sensor_value < 27  } )",
+        condition :  "( function(temperature) { return sensor_value.value > 20 && sensor_value.value < 27  } )",
         triggerFunc: "( function() {  } )",
         active: true
     }];
