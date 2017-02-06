@@ -44,32 +44,8 @@ var DataModel = require('intel-commercial-edge-network-database-models').DataMod
 var SensorModel = require('intel-commercial-edge-network-database-models').SensorModel;
 
 console.log("Edge Device Daemon is starting");
-
-//Configuration to use SSL & TLS
-var fs = require('fs');
-var KEY = fs.readFileSync('/etc/mosquitto/certs/server.key');
-var CERT = fs.readFileSync('/etc/mosquitto/certs/server.crt');
-var TRUSTED_CA_LIST = [fs.readFileSync('/etc/mosquitto/ca_certificates/ca.crt')];
-
-var PORT = 8883;
-var HOST = 'localhost';
-
-var options = {
-  port: PORT,
-  host: HOST,
-  protocol: 'mqtts',
-  protocolId: 'MQIsdp',
-  keyPath: KEY,
-  certPath: CERT,
-  rejectUnauthorized : false,
-  //The CA list will be used to determine if server is authorized
-  ca: TRUSTED_CA_LIST,
-  secureProtocol: 'TLSv1_method',
-  protocolVersion: 3
-};
-
 // Connect to the MQTT server
-var mqttClient  = mqtt.connect(options);
+var mqttClient  = mqtt.connect('mqtt://localhost/');
 
 // MQTT connection function
 mqttClient.on('connect', function () {
