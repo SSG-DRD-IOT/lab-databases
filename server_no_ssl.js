@@ -21,14 +21,19 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-var _ = require("lodash");
+
+// Load the application configuration file
+var config = require("./config.json")
+
+// A library to colorize console output
+var chalk = require('chalk');
 
 // Require MQTT and setup the connection to the broker
 var mqtt = require('mqtt');
 
 // Require the MongoDB libraries and connect to the database
 var mongoose = require('mongoose');
-mongoose.connect("mongodb://localhost/iotdemo");
+mongoose.connect(config.mongodb.host);
 var db = mongoose.connection;
 
 // Report database errors to the console
@@ -36,29 +41,35 @@ db.on('error', console.error.bind(console, 'connection error:'));
 
 // Log when a connection is established to the MongoDB server
 db.once('open', function (callback) {
-    console.log("Connection to MongoDB successful");
+    console.log(chalk.bold.yellow("Connection to MongoDB successful"));
 });
 
 // Import the Database Model Objects
 var DataModel = require('intel-commercial-edge-network-database-models').DataModel;
 var SensorModel = require('intel-commercial-edge-network-database-models').SensorModel;
 
-console.log("Edge Device Daemon is starting");
+console.log(chalk.bold.yellow("Edge Device Daemon is starting"));
+
 // Connect to the MQTT server
-var mqttClient  = mqtt.connect('mqtt://localhost/');
+var mqttClient  = mqtt.connect(config.mqtt.host);
 
 // MQTT connection function
 mqttClient.on('connect', function () {
-    console.log("Connected to MQTT server");
+    console.log(chalk.bold.yellow("Connected to MQTT server"));
 
     // Subscribe to the MQTT topics
     mqttClient.subscribe('announcements');
     mqttClient.subscribe('sensors/+/data');
 });
 
+// MQTT error function - Client unable to connect
+mqttClient.on('error', function () {
+    console.log(chalk.bold.yellow("Unable to connect to MQTT server"));
+    process.exit();
+});
+
 // A function that runs when MQTT receives a message
 mqttClient.on('message', function (topic, message) {
-    console.log(topic + ":" + message.toString());
 
     // Parse the incoming data
     try {
@@ -74,9 +85,9 @@ mqttClient.on('message', function (topic, message) {
         var sensor = new SensorModel(json);
         sensor.save(function(err, sensor) {
             if (err)
-                console.log(err);
+                console.error(err);
             else
-                console.log("Wrote sensor to db:" + sensor.toString());
+                console.log("Wrote sensor to db:" + topic + ":" + chalk.white(sensor.toString()));
         });
     };
 
@@ -84,10 +95,9 @@ mqttClient.on('message', function (topic, message) {
         var value = new DataModel(json);
         value.save(function(err, data) {
             if (err)
-                console.log(err);
+                console.error(err);
             else
-                console.log(data.sensor_id + ":" + data.value);
-                console.log("Wrote data to db:" + data.toString());
+                console.log(chalk.bold.yellow("Wrote data to db:") + topic + ":" + chalk.white(message.toString()));
         });
     }
 });

@@ -7,5 +7,13 @@
         "host" : "mongodb://localhost/iotdemo"
     },
 
+    "tls" : {
+      "serverKey" : "/etc/mosquitto/certs/server.key",
+      "serverCrt" : "/etc/mosquitto/certs/server.crt",
+      "ca_certificates" : "/etc/mosquitto/ca_certificates/ca.crt",
+      "host" : "localhost",
+      "port" : "8883"
+    },
+
     "debug" : "true"
 }
