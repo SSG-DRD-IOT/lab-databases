@@ -1,26 +1,3 @@
-/*
- * Author: Daniel Holmlund <daniel.w.holmlund@Intel.com>
- * Copyright (c) 2015 Intel Corporation.
- *
- * Permission is hereby granted, free of charge, to any person obtaining
- * a copy of this software and associated documentation files (the
- * "Software"), to deal in the Software without restriction, including
- * without limitation the rights to use, copy, modify, merge, publish,
- * distribute, sublicense, and/or sell copies of the Software, and to
- * permit persons to whom the Software is furnished to do so, subject to
- * the following conditions:
- *
- * The above copyright notice and this permission notice shall be
- * included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
- * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
- * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
- * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
 var mongoose = require('mongoose');
 var _ = require('lodash');
 
@@ -67,7 +44,7 @@ var triggers = [
         name : "temperature_greater_than_27",
         sensor_id : "temperature",
         condition :  "( function(sensor_value) { return sensor_value.value > 27 } )",
-        triggerFunc: "( function() { console.log('Temperature is to Hot'); })",
+        triggerFunc: "( function() { console.log(this.chalk.bold.red('Temperature is too Hot')); })",
         active: true
     },
 
@@ -76,16 +53,7 @@ var triggers = [
         name : "temperature_less_than_20",
         sensor_id : "temperature",
         condition : "( function(sensor_value) { return sensor_value.value < 20 } )",
-        triggerFunc : "( function() { console.log('Temperature is to Cold'); } )",
-        active: true
-    },
-
-    {
-        id : "temperature_ok",
-        name : "temperature_ok",
-        sensor_id : "temperature",
-        condition :  "( function(sensor_value) { return sensor_value.value > 20 && sensor_value.value < 27  } )",
-        triggerFunc: "( function() {  } )",
+        triggerFunc : "( function() { console.log(this.chalk.bold.blue('Temperature is too Cold')); } )",
         active: true
     }];
 
@@ -134,4 +102,4 @@ db.once('open', function (callback) {
               });
 
 });
-// //db.close();
+   console.log("Press CRTL+C to exit.")
