@@ -100,13 +100,13 @@ mqttClient.on('message', function (topic, message) {
     // Parse the incoming data
     try {
         json = JSON.parse(message);
-    } catch(e){
+    } catch(e) {
         console.log(e);
     }
 
     if (topic == "announcements") {
-        console.log("Received an announcement of a new edge sensor");
-        console.log(topic + ":" + message.toString());
+        // console.log("Received an announcement of a new edge sensor");
+        // console.log(topic + ":" + message.toString());
 
         var sensor = new SensorModel(json);
         sensor.save(function(err, sensor) {

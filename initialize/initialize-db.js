@@ -84,7 +84,7 @@ var triggers = [
         id : "temperature_ok",
         name : "temperature_ok",
         sensor_id : "temperature",
-        condition :  "( function(temperature) { return sensor_value.value > 20 && sensor_value.value < 27  } )",
+        condition :  "( function(sensor_value) { return sensor_value.value > 20 && sensor_value.value < 27  } )",
         triggerFunc: "( function() {  } )",
         active: true
     }];
