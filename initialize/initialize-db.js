@@ -76,7 +76,7 @@ var triggers = [
         name : "temperature_less_than_20",
         sensor_id : "temperature",
         condition : "( function(sensor_value) { return sensor_value.value < 20 } )",
-        triggerFunc : "( function() { console.log('Temperature is to Hot'); } )",
+        triggerFunc : "( function() { console.log('Temperature is to Cold'); } )",
         active: true
     },
 

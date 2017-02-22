@@ -25,6 +25,9 @@
 // Load the application configuration file
 var config = require("./config.json")
 
+// Load NodeJS Library to interact with the filesystem
+var fs = require('fs');
+
 // A library to colorize console output
 var chalk = require('chalk');
 
@@ -33,6 +36,8 @@ var mqtt = require('mqtt');
 
 // Require the MongoDB libraries and connect to the database
 var mongoose = require('mongoose');
+
+// Create a connection to the database
 mongoose.connect(config.mongodb.host);
 var db = mongoose.connection;
 
@@ -48,10 +53,10 @@ db.once('open', function (callback) {
 var DataModel = require('intel-commercial-edge-network-database-models').DataModel;
 var SensorModel = require('intel-commercial-edge-network-database-models').SensorModel;
 
-console.log(chalk.bold.yellow("Edge Device Daemon is starting"));
+// Write startup message to the console
+console.log(chalk.bold.yellow("Monitor server is starting"));
 
-//Configuration to use TLS
-var fs = require('fs');
+// Read in the server key and cert and the CA certs
 try {
   var KEY = fs.readFileSync(config.tls.serverKey);
   var CERT = fs.readFileSync(config.tls.serverCrt);
@@ -62,6 +67,7 @@ try {
   process.exit()
 }
 
+// options - an object to initialize the TLS connection settings
 var options = {
   port: config.tls.port,
   host: config.tls.host,
