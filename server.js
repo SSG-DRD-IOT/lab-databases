@@ -22,8 +22,14 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-// Load the application configuration file
-var config = require("./config.json")
+// Load the application configuration file or exit the process
+try {
+ var config = require("./config.json")
+}
+catch (e) {
+ console.log(e)
+ process.exit(1);
+}
 
 // Load NodeJS Library to interact with the filesystem
 var fs = require('fs');
