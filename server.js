@@ -56,8 +56,8 @@ db.once('open', function (callback) {
 });
 
 // Import the Database Model Objects
-var DataModel = require('intel-commercial-edge-network-database-models').DataModel;
-var SensorModel = require('intel-commercial-edge-network-database-models').SensorModel;
+var Data = require('intel-commercial-edge-network-database-models').Data;
+var Sensor = require('intel-commercial-edge-network-database-models').Sensor;
 
 // Write startup message to the console
 console.log(chalk.bold.yellow("Monitor server is starting"));
@@ -108,7 +108,6 @@ mqttClient.on('error', function () {
 
 // A function that runs when MQTT receives a message
 mqttClient.on('message', function (topic, message) {
-
     // Parse the incoming data
     try {
         json = JSON.parse(message);
@@ -120,7 +119,7 @@ mqttClient.on('message', function (topic, message) {
         // console.log("Received an announcement of a new edge sensor");
         // console.log(topic + ":" + message.toString());
 
-        var sensor = new SensorModel(json);
+        var sensor = new Sensor(json);
         sensor.save(function(err, sensor) {
             if (err)
                 console.error(err);
@@ -130,7 +129,7 @@ mqttClient.on('message', function (topic, message) {
     };
 
     if (topic.match(/data/)) {
-        var value = new DataModel(json);
+        var value = new Data(json);
         value.save(function(err, data) {
             if (err)
                 console.error(err);
