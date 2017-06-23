@@ -1,17 +1,15 @@
 {
-    "mqtt" : {
-        "url" : "mqtt://localhost"
-    },
-
-    "mongodb" : {
-        "host" : "mongodb://localhost/iotdemo"
-    },
-
-    "tls" : {
-      "serverKey" : "/etc/tls-certs/certs/server.key",
-      "serverCrt" : "/etc/tls-certs/certs/server.crt",
-      "ca_certificates" : "/etc/tls-certs/ca_certificates/ca.crt",
-      "host" : "localhost",
-      "port" : "8883"
-    }
+  "mqtt": {
+    "url": "mqtt://localhost"
+  },
+  "mongodb": {
+    "host": "mongodb://localhost/iotdemo"
+  },
+  "tls": {
+    "serverKey": "./certs/server.key",
+    "serverCrt": "./certs/server.crt",
+    "ca_certificates": "./certs/ca.crt",
+    "host": "localhost",
+    "port": "8883"
+  }
 }
