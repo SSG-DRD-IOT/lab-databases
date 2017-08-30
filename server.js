@@ -21,14 +21,9 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-////////////////////////////////////////////////////////////////////////////////
-// ISTV Block 1
-// Load the application configuration file or exit the process
-var config = require("./config.json")
-////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////
-// ISTV Block 2
+// ISTV Block 1
 // Load NodeJS Library to interact with the filesystem
 // Require MQTT and setup the connection to the broker
 // Require the MongoDB libraries and connect to the database
@@ -39,12 +34,12 @@ var mongoose = require('mongoose');
 // end ISTV Block
 
 ////////////////////////////////////////////////////////////////////////////////
-// ISTV Block 3
+// ISTV Block 2
 // Create a connection to the database and define a event callback function 
 // that will print "Connection to MongoDB successful" when the NodeJS service
 // connects to the Mongo database.
 ////////////////////////////////////////////////////////////////////////////////
-mongoose.connect(config.mongodb.host);
+mongoose.connect("mongodb://localhost/iot");
 var db = mongoose.connection;
 
 // Log when a connection is established to the MongoDB server
@@ -54,7 +49,7 @@ db.once('open', function (callback) {
 // end ISTV Block
 
 ////////////////////////////////////////////////////////////////////////////////
-// ISTV Block 4
+// ISTV Block 3
 // Next, we define the MongoDB schemas and models for this video in a NPM 
 // module named intel-commercial-edge-network-database-models.
 // Import these Database Model Objects
@@ -64,19 +59,19 @@ var Sensor = require('intel-commercial-edge-network-database-models').Sensor;
 // end ISTV Block
 
 ////////////////////////////////////////////////////////////////////////////////
-// ISTV Block 5
+// ISTV Block 4
 // options - an object to initialize the TLS connection settings
 ////////////////////////////////////////////////////////////////////////////////
 var options = {
-  port: config.tls.port,
-  host: config.tls.host,
+  port: "8883",
+  host: "localhost",
   protocol: 'mqtts',
   protocolId: 'MQIsdp',
-  keyPath: fs.readFileSync(config.tls.serverKey);,
-  certPath: fs.readFileSync(config.tls.serverCrt),
+  keyPath: fs.readFileSync("./certs/server.key");,
+  certPath: fs.readFileSync(./certs/server.crt"),
   rejectUnauthorized : false,
   //The CA list will be used to determine if server is authorized
-  ca: [fs.readFileSync(config.tls.ca_certificates)], 
+  ca: [fs.readFileSync("./certs/ca.crt")], 
   secureProtocol: 'TLSv1_method',
   protocolVersion: 3
 };
@@ -86,7 +81,7 @@ var mqttClient  = mqtt.connect(options);
 // end ISTV Block
 
 ////////////////////////////////////////////////////////////////////////////////
-// ISTV Block 6
+// ISTV Block 5
 // When our database service connects to the MQTT server, we want to subscribe
 // to all sensor data on the local area network.
 ////////////////////////////////////////////////////////////////////////////////
@@ -98,7 +93,7 @@ mqttClient.on('connect', function () {
 // end ISTV Block
 
 ////////////////////////////////////////////////////////////////////////////////
-// ISTV Block 7
+// ISTV Block 6
 // When a message event is received we will parse the stringified data and convert
 // it into a JSON Object that we can serialize to the MongoDB database.
 ////////////////////////////////////////////////////////////////////////////////
