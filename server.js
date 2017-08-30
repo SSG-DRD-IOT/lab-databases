@@ -21,91 +21,87 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
+////////////////////////////////////////////////////////////////////////////////
+// ISTV Block 1
 // Load the application configuration file or exit the process
-try {
- var config = require("./config.json")
-}
-catch (e) {
- console.log(e)
- process.exit(1);
-}
+var config = require("./config.json")
+////////////////////////////////////////////////////////////////////////////////
 
+////////////////////////////////////////////////////////////////////////////////
+// ISTV Block 2
 // Load NodeJS Library to interact with the filesystem
-var fs = require('fs');
-
-// A library to colorize console output
-var chalk = require('chalk');
-
 // Require MQTT and setup the connection to the broker
-var mqtt = require('mqtt');
-
 // Require the MongoDB libraries and connect to the database
+////////////////////////////////////////////////////////////////////////////////
+var fs = require('fs');
+var mqtt = require('mqtt');
 var mongoose = require('mongoose');
+// end ISTV Block
 
-// Create a connection to the database
+////////////////////////////////////////////////////////////////////////////////
+// ISTV Block 3
+// Create a connection to the database and define a event callback function 
+// that will print "Connection to MongoDB successful" when the NodeJS service
+// connects to the Mongo database.
+////////////////////////////////////////////////////////////////////////////////
 mongoose.connect(config.mongodb.host);
 var db = mongoose.connection;
 
-// Report database errors to the console
-db.on('error', console.error.bind(console, 'connection error:'));
-
 // Log when a connection is established to the MongoDB server
 db.once('open', function (callback) {
-    console.log(chalk.bold.yellow("Connection to MongoDB successful"));
+    console.log("Connection to MongoDB successful");
 });
+// end ISTV Block
 
-// Import the Database Model Objects
+////////////////////////////////////////////////////////////////////////////////
+// ISTV Block 4
+// Next, we define the MongoDB schemas and models for this video in a NPM 
+// module named intel-commercial-edge-network-database-models.
+// Import these Database Model Objects
+////////////////////////////////////////////////////////////////////////////////
 var Data = require('intel-commercial-edge-network-database-models').Data;
 var Sensor = require('intel-commercial-edge-network-database-models').Sensor;
+// end ISTV Block
 
-// Write startup message to the console
-console.log(chalk.bold.yellow("Monitor server is starting"));
-
-// Read in the server key and cert and the CA certs
-try {
-  var KEY = fs.readFileSync(config.tls.serverKey);
-  var CERT = fs.readFileSync(config.tls.serverCrt);
-  var TRUSTED_CA_LIST = [fs.readFileSync(config.tls.ca_certificates)];
-} catch (err) {
-  console.error(chalk.bold.red("Unable to find the TLS certs. Please see the first section of the security lab for instructions on creating TLS keys and certificates"))
-  console.error(err)
-  process.exit()
-}
-
+////////////////////////////////////////////////////////////////////////////////
+// ISTV Block 5
 // options - an object to initialize the TLS connection settings
+////////////////////////////////////////////////////////////////////////////////
 var options = {
   port: config.tls.port,
   host: config.tls.host,
   protocol: 'mqtts',
   protocolId: 'MQIsdp',
-  keyPath: KEY,
-  certPath: CERT,
+  keyPath: fs.readFileSync(config.tls.serverKey);,
+  certPath: fs.readFileSync(config.tls.serverCrt),
   rejectUnauthorized : false,
   //The CA list will be used to determine if server is authorized
-  ca: TRUSTED_CA_LIST,
+  ca: [fs.readFileSync(config.tls.ca_certificates)], 
   secureProtocol: 'TLSv1_method',
   protocolVersion: 3
 };
 
 // Connect to the MQTT server
 var mqttClient  = mqtt.connect(options);
+// end ISTV Block
 
+////////////////////////////////////////////////////////////////////////////////
+// ISTV Block 6
+// When our database service connects to the MQTT server, we want to subscribe
+// to all sensor data on the local area network.
+////////////////////////////////////////////////////////////////////////////////
 // MQTT connection function
 mqttClient.on('connect', function () {
-    console.log(chalk.bold.yellow("Connected to MQTT server"));
-
-    // Subscribe to the MQTT topics
-    mqttClient.subscribe('announcements');
+    console.log("Connected to MQTT server");
     mqttClient.subscribe('sensors/+/data');
 });
+// end ISTV Block
 
-// MQTT error function - Client unable to connect
-mqttClient.on('error', function () {
-    console.log(chalk.bold.yellow("Unable to connect to MQTT server"));
-    process.exit();
-});
-
+////////////////////////////////////////////////////////////////////////////////
+// ISTV Block 7
+// When a message event is received we will parse the stringified data and convert
+// it into a JSON Object that we can serialize to the MongoDB database.
+////////////////////////////////////////////////////////////////////////////////
 // A function that runs when MQTT receives a message
 mqttClient.on('message', function (topic, message) {
     // Parse the incoming data
@@ -115,26 +111,14 @@ mqttClient.on('message', function (topic, message) {
         console.log(e);
     }
 
-    if (topic == "announcements") {
-        // console.log("Received an announcement of a new edge sensor");
-        // console.log(topic + ":" + message.toString());
-
-        var sensor = new Sensor(json);
-        sensor.save(function(err, sensor) {
-            if (err)
-                console.error(err);
-            else
-                console.log(chalk.bold.yellow("Wrote data to db:") + topic + ":" + chalk.white(message.toString()));
-        });
-    };
-
     if (topic.match(/data/)) {
         var value = new Data(json);
         value.save(function(err, data) {
             if (err)
                 console.error(err);
             else
-                console.log(chalk.bold.yellow("Wrote data to db:") + topic + ":" + chalk.white(message.toString()));
+                console.log(topic + ":" + message.toString());
         });
     }
 });
+// end ISTV Block
